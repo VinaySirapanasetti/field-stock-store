@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fieldstock Commerce — Handcrafted Vases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+  :root{
+    --ink:#15201c;
+    --parchment:#f3eee3;
+    --parchment-dim:#e9e2d2;
+    --moss:#3f5a48;
+    --moss-deep:#2b4034;
+    --amber:#b8862b;
+    --clay:#241f1a;
+    --clay-soft:#6b6357;
+    --line: rgba(36,31,26,0.14);
+    --radius: 3px;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: env(safe-area-inset-top, 0px);}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--clay);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+  /* HEADER */
+  header{
+    position:sticky; top:0; z-index:40;
+    background:var(--ink); color:var(--parchment);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1120px;margin:0 auto;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:22px;letter-spacing:0.2px;}
+  .brand em{font-style:italic;color:var(--amber);}
+  nav.cats{display:flex;gap:22px;font-size:14px;}
+  nav.cats a{text-decoration:none;opacity:0.85;border-bottom:1px solid transparent;padding-bottom:2px;}
+  nav.cats a:hover{opacity:1;border-color:var(--amber);}
+  .head-actions{display:flex;gap:14px;align-items:center;}
+  .icon-btn{background:none;border:1px solid rgba(243,238,227,0.3);color:var(--parchment);border-radius:var(--radius);padding:7px 12px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+  .icon-btn:hover{border-color:var(--amber);}
+  .cart-count{background:var(--amber);color:var(--ink);border-radius:50%;font-size:11px;padding:1px 6px;margin-left:6px;font-weight:700;}
+
+  /* HERO */
+  .hero{background:var(--ink);color:var(--parchment);padding:56px 0 72px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+  .hero h1{font-size:46px;line-height:1.08;font-weight:500;margin:0 0 20px;max-width:14ch;}
+  .hero p{color:rgba(243,238,227,0.75);font-size:16px;line-height:1.6;max-width:42ch;margin:0 0 28px;}
+  .btn{display:inline-block;background:var(--amber);color:var(--ink);text-decoration:none;padding:12px 22px;border-radius:var(--radius);font-weight:600;font-size:14px;border:none;cursor:pointer;font-family:'Inter',sans-serif;}
+  .btn.ghost{background:transparent;border:1px solid rgba(243,238,227,0.4);color:var(--parchment);}
+  .btn.small{padding:8px 14px;font-size:13px;}
+  .hero-visual{border:1px solid rgba(243,238,227,0.2);border-radius:var(--radius);padding:32px 26px 24px;background:rgba(243,238,227,0.03);position:relative;overflow:hidden;}
+  .shelf-title{font-size:11px;letter-spacing:.08em;color:rgba(243,238,227,0.55);margin-bottom:24px;text-transform:uppercase;}
+  .shelf-row{display:flex;justify-content:space-around;align-items:flex-end;height:150px;position:relative;}
+  .shelf-line{position:absolute;bottom:34px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--amber),transparent);opacity:.5;}
+  .shelf-item{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;animation:float 4s ease-in-out infinite;}
+  .shelf-item:nth-child(2){animation-delay:.6s;}
+  .shelf-item:nth-child(3){animation-delay:1.2s;}
+  .shelf-item:nth-child(4){animation-delay:1.8s;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .vase-icon{width:38px;background:linear-gradient(180deg,#e8c874,var(--amber) 60%,#8a6318);box-shadow:0 6px 14px rgba(184,134,43,0.35);}
+  .vase-donut{height:38px;border-radius:50%;border:9px solid var(--amber);background:transparent;box-shadow:0 6px 14px rgba(184,134,43,0.35);}
+  .vase-arch{width:40px;height:44px;border-radius:20px 20px 0 0;position:relative;}
+  .vase-arch:after{content:'';position:absolute;bottom:0;left:9px;width:22px;height:24px;background:var(--ink);border-radius:11px 11px 0 0;}
+  .vase-patina{height:34px;border-radius:50%;background:linear-gradient(180deg,#e8c874,#6b8f6f 75%);}
+  .vase-hammered{height:46px;border-radius:6px 6px 14px 14px;}
+  .shelf-item span{font-size:10px;color:rgba(243,238,227,0.5);}
+
+  /* AISLES */
+  .aisle{padding:44px 0 8px;}
+  .aisle-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;}
+  .aisle-head h2{font-size:24px;font-weight:500;margin:0;}
+  .aisle-head span{color:var(--clay-soft);font-size:13px;}
+  .aisle-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:14px;scroll-snap-type:x proximity;}
+  .aisle-scroll::-webkit-scrollbar{height:6px;}
+  .aisle-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+  .card{
+    flex:0 0 240px; scroll-snap-align:start;
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:#fff; cursor:pointer; overflow:hidden;
+    transition:border-color .15s;
+  }
+  .card:hover{border-color:var(--moss);}
+  .card .thumb{height:170px;display:flex;align-items:center;justify-content:center;font-size:44px;background:var(--parchment-dim);}
+  .card .body{padding:14px;}
+  .card .cat-tag{font-size:11px;color:var(--moss-deep);margin-bottom:4px;}
+  .card h3{font-size:15px;font-weight:500;margin:0 0 6px;line-height:1.3;}
+  .card .price{font-family:'Fraunces',serif;font-size:16px;color:var(--amber);}
+  .empty-aisle{color:var(--clay-soft);font-size:14px;font-style:italic;padding:10px 0;}
+
+  /* SECTION: how it works / admin entry */
+  .band{background:var(--parchment-dim);padding:40px 0;margin-top:40px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .band-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;}
+  .band h2{font-size:22px;margin:0 0 10px;}
+  .band p{color:var(--clay-soft);font-size:14px;line-height:1.6;margin:0 0 16px;max-width:46ch;}
+
+  footer{padding:36px 0;text-align:center;color:var(--clay-soft);font-size:12px;}
+  .foot-links{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:14px;}
+  .foot-links a{font-size:12px;color:var(--clay-soft);text-decoration:underline;cursor:pointer;}
+  .policy-page{padding:20px 0 60px;}
+  .policy-page h2{font-size:26px;margin-bottom:6px;}
+  .policy-page .updated{color:var(--clay-soft);font-size:12px;margin-bottom:24px;}
+  .policy-page h3{font-size:16px;margin:22px 0 8px;}
+  .policy-page p, .policy-page li{color:var(--clay-soft);font-size:14px;line-height:1.7;}
+  .policy-page ul{padding-left:20px;}
+  .contact-block{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-top:10px;font-size:14px;}
+  .contact-block div{padding:4px 0;}
+
+  /* MODALS */
+  .overlay{position:fixed;inset:0;background:rgba(21,32,28,0.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:var(--radius);max-width:520px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;position:relative;}
+  .modal h2{margin-top:0;font-size:22px;}
+  .modal .close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--clay-soft);}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;color:var(--clay-soft);margin-bottom:5px;}
+  .field input,.field select,.field textarea{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius);
+    font-family:'Inter',sans-serif;font-size:14px;background:var(--parchment);
+  }
+  .field textarea{resize:vertical;min-height:60px;}
+
+  /* CART */
+  .cart-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .cart-row .rm{background:none;border:none;color:var(--clay-soft);cursor:pointer;font-size:13px;text-decoration:underline;}
+  .cart-total{display:flex;justify-content:space-between;padding:16px 0;font-family:'Fraunces',serif;font-size:18px;}
+
+  /* PRODUCT DETAIL PAGE (rendered into #detail-view) */
+  .detail-back{background:none;border:none;color:var(--moss-deep);cursor:pointer;font-size:13px;margin-bottom:18px;padding:0;}
+  .detail-hero{display:grid;grid-template-columns:0.9fr 1.1fr;gap:40px;margin-bottom:36px;}
+  .detail-thumb{height:320px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:90px;}
+  .detail-cat{font-size:12px;color:var(--moss-deep);margin-bottom:8px;}
+  .detail-hero h1{font-size:34px;margin:0 0 14px;font-weight:500;}
+  .detail-price{font-family:'Fraunces',serif;font-size:24px;color:var(--amber);margin-bottom:18px;}
+  .detail-desc{color:var(--clay-soft);font-size:14px;line-height:1.7;margin-bottom:22px;}
+  .spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .spec-grid div{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;}
+  .spec-grid div:nth-child(odd){background:var(--parchment-dim);color:var(--clay-soft);}
+  .routine-steps{list-style:none;padding:0;margin:0;counter-reset:step;}
+  .routine-steps li{padding:12px 0 12px 34px;position:relative;border-bottom:1px solid var(--line);font-size:14px;color:var(--clay-soft);}
+  .routine-steps li:before{counter-increment:step;content:counter(step);position:absolute;left:0;top:11px;width:22px;height:22px;border:1px solid var(--moss);border-radius:50%;font-size:11px;display:flex;align-items:center;justify-content:center;color:var(--moss-deep);font-family:'Fraunces',serif;}
+  .feature-icons{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .feature-icons div{border:1px solid var(--line);border-radius:var(--radius);padding:14px;font-size:13px;color:var(--clay-soft);}
+  .feature-icons div b{display:block;color:var(--clay);font-family:'Fraunces',serif;font-size:15px;margin-bottom:4px;}
+  .module-diagram{display:flex;flex-direction:column;gap:8px;}
+  .module-diagram div{border:1px dashed var(--moss);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--clay-soft);display:flex;justify-content:space-between;}
+
+  @media (max-width:760px){
+    nav.cats{display:none;}
+    .hero-grid,.band-grid,.detail-hero{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}
+  }
+
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand">Fieldstock <em>Commerce</em></div>
+    <nav class="cats" id="navCats"></nav>
+    <div class="head-actions">
+      <button class="icon-btn" onclick="openModal('adminModal')">+ Add product</button>
+      <button class="icon-btn" onclick="openModal('cartModal');renderCart();">Cart<span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Handcrafted metal vases, made in Moradabad, styled for your home.</h1>
+        <p>Fieldstock sources statement vases — donut silhouettes, sculptural arches, aged patina finishes, and classic hammered brass — directly from India's metal-craft capital. Built for people who order after seeing it once on Instagram.</p>
+        <a href="#aisle-Statement%20Vases" class="btn">Browse what's trending</a>
+      </div>
+      <div class="hero-visual">
+        <div class="shelf-title">On the shelf right now</div>
+        <div class="shelf-row">
+          <div class="shelf-line"></div>
+          <div class="shelf-item"><div class="vase-icon vase-donut"></div><span>Donut</span></div>
+          <div class="shelf-item"><div class="vase-icon vase-arch"></div><span>Arch</span></div>
+          <div class="shelf-item"><div class="vase-icon vase-patina"></div><span>Patina</span></div>
+          <div class="shelf-item"><div class="vase-icon vase-hammered"></div><span>Hammered</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap" id="aisles"></div>
+
+  <section class="band">
+    <div class="wrap band-grid">
+      <div>
+        <h2>Every product gets its own page, automatically</h2>
+        <p>Add a product once and Fieldstock builds a page styled to fit its type — spec sheets for statement pieces, styling ideas for sculptural forms, care notes for patina finishes, and full details for classic hammered brass. No manual layout work.</p>
+        <button class="btn small" onclick="openModal('adminModal')">Add a product now</button>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--clay-soft);line-height:1.7;">
+          This is the storefront layer. Checkout below is wired for real payment providers — see the setup notes I've included underneath this page for connecting Razorpay or Stripe to a live backend once you're ready to accept real orders.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <div class="foot-links">
+      <a onclick="showPolicy('about')">About Us</a>
+      <a onclick="showPolicy('contact')">Contact Us</a>
+      <a onclick="showPolicy('shipping')">Shipping Policy</a>
+      <a onclick="showPolicy('refund')">Refund & Cancellation Policy</a>
+      <a onclick="showPolicy('terms')">Terms & Conditions</a>
+      <a onclick="showPolicy('privacy')">Privacy Policy</a>
+    </div>
+    Fieldstock — demo storefront generated for Instagram-led dropshipping
+  </footer>
+</main>
+
+<div id="detail-view" class="wrap" style="display:none;padding-top:32px;"></div>
+<div id="policy-view" class="wrap policy-page" style="display:none;"></div>
+
+<!-- CART MODAL -->
+<div class="overlay" id="cartModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('cartModal')">&times;</button>
+    <h2>Your cart</h2>
+    <div id="cartItems"></div>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn" style="width:100%;" onclick="closeModal('cartModal');openModal('checkoutModal');">Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay" id="checkoutModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('checkoutModal')">&times;</button>
+    <h2>Checkout</h2>
+    <div class="field"><label>Full name</label><input id="ckName" placeholder="Your name"></div>
+    <div class="field"><label>Shipping address</label><textarea id="ckAddr" placeholder="Address, city, PIN/ZIP, country"></textarea></div>
+    <div class="field"><label>Email</label><input id="ckEmail" placeholder="you@email.com"></div>
+    <div class="cart-total"><span>Amount due</span><span id="ckTotal">₹0</span></div>
+    <button class="btn" style="width:100%;" onclick="payReal()">Pay now</button>
+    <p style="font-size:12px;color:var(--clay-soft);margin-top:12px;">Payments are processed securely by Razorpay. Use Razorpay's test card while your account is in test mode.</p>
+  </div>
+</div>
+
+<!-- ADD PRODUCT MODAL -->
+<div class="overlay" id="adminModal">
+  <div class="modal">
+    <button class="close" onclick="closeModal('adminModal')">&times;</button>
+    <h2>Add a product</h2>
+    <div class="field">
+      <label>Category (sets the page template)</label>
+      <select id="pCat">
+        <option>Statement Vases</option>
+        <option>Sculptural Arch</option>
+        <option>Aged & Patina</option>
+        <option>Classic Hammered</option>
+      </select>
+    </div>
+    <div class="field"><label>Product name</label><input id="pName" placeholder="e.g. GPS smart collar"></div>
+    <div class="field"><label>Price (₹)</label><input id="pPrice" type="number" placeholder="1499"></div>
+    <div class="field"><label>Emoji / icon (stands in for a photo)</label><input id="pEmoji" placeholder="🐾" maxlength="4"></div>
+    <div class="field"><label>Short description</label><textarea id="pDesc" placeholder="What it does and why it sells"></textarea></div>
+    <div class="field"><label>Detail lines (comma-separated — specs, routine steps, or features depending on category)</label>
+      <textarea id="pDetails" placeholder="e.g. Battery: 10 days, Waterproof: IP67, Range: 2km"></textarea>
+    </div>
+    <button class="btn" style="width:100%;" onclick="addProduct()">Create product page</button>
+  </div>
+</div>
+
+<script>
+const CATS = ["Statement Vases","Sculptural Arch","Aged & Patina","Classic Hammered"];
+const CAT_EMOJI = {"Statement Vases":"🏺","Sculptural Arch":"🌉","Aged & Patina":"🍃","Classic Hammered":"🔨"};
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem('fs_cart') || '[]');
+
+function save(){ /* products now live on the backend — this is a no-op kept for compatibility */ }
+function saveCart(){ localStorage.setItem('fs_cart', JSON.stringify(cart)); updateCartCount(); }
+
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function renderNav(){
+  document.getElementById('navCats').innerHTML = CATS.map(c=>`<a href="#aisle-${encodeURIComponent(c)}">${c}</a>`).join('');
+}
+
+function renderAisles(){
+  const wrap = document.getElementById('aisles');
+  wrap.innerHTML = CATS.map(cat=>{
+    const items = products.filter(p=>p.cat===cat);
+    const cards = items.length ? items.map(p=>`
+      <div class="card" onclick="showDetail(${p.id})">
+        <div class="thumb">${p.emoji}</div>
+        <div class="body">
+          <div class="cat-tag">${p.cat}</div>
+          <h3>${p.name}</h3>
+          <div class="price">₹${p.price}</div>
+        </div>
+      </div>`).join('') : `<div class="empty-aisle">No products here yet — add one to fill this aisle.</div>`;
+    return `<div class="aisle" id="aisle-${encodeURIComponent(cat)}">
+      <div class="aisle-head"><h2>${cat}</h2><span>${items.length} item${items.length===1?'':'s'}</span></div>
+      <div class="aisle-scroll">${cards}</div>
+    </div>`;
+  }).join('');
+  const statEl = document.getElementById('statProducts');
+  if(statEl) statEl.textContent = products.length;
+}
+
+function showDetail(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('app').style.display='none';
+  const dv = document.getElementById('detail-view');
+  dv.style.display='block';
+
+  let right = '';
+  if(p.cat==="Statement Vases"){
+    right = `<div class="spec-grid">${p.details.map(d=>{
+      const [k,v] = d.split(':'); return `<div>${k?k.trim():''}</div><div>${v?v.trim():d}</div>`;
+    }).join('')}</div>`;
+  } else if(p.cat==="Sculptural Arch"){
+    right = `<ol class="routine-steps">${p.details.map(d=>`<li>${d.trim()}</li>`).join('')}</ol>`;
+  } else if(p.cat==="Aged & Patina"){
+    right = `<div class="feature-icons">${p.details.map(d=>{
+      const [k,v]=d.split(':'); return `<div><b>${k?k.trim():d}</b>${v?v.trim():''}</div>`;
+    }).join('')}</div>`;
+  } else {
+    right = `<div class="module-diagram">${p.details.map((d,i)=>{
+      const [k,v]=d.split('—'); return `<div><span>${k?k.trim():d}</span><span style="color:var(--moss-deep)">${v?v.trim():''}</span></div>`;
+    }).join('')}</div>`;
+  }
+
+  dv.innerHTML = `
+    <button class="detail-back" onclick="hideDetail()">&larr; Back to store</button>
+    <div class="detail-hero">
+      <div class="detail-thumb" style="background:var(--parchment-dim);">${p.emoji}</div>
+      <div>
+        <div class="detail-cat">${p.cat}</div>
+        <h1>${p.name}</h1>
+        <div class="detail-price">₹${p.price}</div>
+        <p class="detail-desc">${p.desc}</p>
+        <button class="btn" onclick="addToCart(${p.id})">Add to cart</button>
+      </div>
+    </div>
+    <h3 style="font-weight:500;font-size:16px;margin-bottom:14px;">
+      ${p.cat==="Statement Vases" ? "Specifications" : p.cat==="Sculptural Arch" ? "Ways to style" : p.cat==="Aged & Patina" ? "Care & finish" : "What's included"}
+    </h3>
+    ${right}
+  `;
+  window.scrollTo(0,0);
+}
+function hideDetail(){
+  document.getElementById('detail-view').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+function addToCart(id){
+  const p = products.find(x=>x.id===id);
+  const existing = cart.find(c=>c.id===id);
+  if(existing) existing.qty++; else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+  saveCart();
+  openModal('cartModal'); renderCart();
+}
+function removeFromCart(id){ cart = cart.filter(c=>c.id!==id); saveCart(); renderCart(); }
+function cartTotal(){ return cart.reduce((s,c)=>s+c.price*c.qty,0); }
+function updateCartCount(){ document.getElementById('cartCount').textContent = cart.reduce((s,c)=>s+c.qty,0); }
+function renderCart(){
+  const el = document.getElementById('cartItems');
+  el.innerHTML = cart.length ? cart.map(c=>`
+    <div class="cart-row">
+      <span>${c.name} × ${c.qty}</span>
+      <span>₹${c.price*c.qty} <button class="rm" onclick="removeFromCart(${c.id})">remove</button></span>
+    </div>`).join('') : `<p style="color:var(--clay-soft);font-size:14px;">Cart is empty.</p>`;
+  document.getElementById('cartTotal').textContent = '₹'+cartTotal();
+}
+
+const BACKEND_URL = 'https://fieldstock-backend.onrender.com';
+
+async function payReal(){
+  const name = document.getElementById('ckName').value.trim();
+  const email = document.getElementById('ckEmail').value.trim();
+  const addr = document.getElementById('ckAddr').value.trim();
+  if(!name || !addr){ alert('Add your name and shipping address first.'); return; }
+
+  const amount = cartTotal();
+  document.getElementById('ckTotal').textContent = '₹'+amount;
+
+  try{
+    const res = await fetch(BACKEND_URL + '/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, customer: { name, email } })
+    });
+    const order = await res.json();
+    if(!order.order_id){ alert('Could not start payment. Check the backend is running.'); return; }
+
+    const rzp = new Razorpay({
+      key: order.key_id,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'Fieldstock Commerce',
+      description: 'Order payment',
+      prefill: { name, email },
+      handler: async function(response){
+        const verifyRes = await fetch(BACKEND_URL + '/api/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(response)
+        });
+        const result = await verifyRes.json();
+        if(result.success){
+          alert('Payment successful! Order confirmed.');
+          cart = []; saveCart();
+          closeModal('checkoutModal');
+        } else {
+          alert('Payment could not be verified. Please contact support.');
+        }
+      },
+      modal: {
+        ondismiss: function(){ console.log('Checkout closed without completing payment.'); }
+      }
+    });
+    rzp.open();
+  } catch(err){
+    console.error(err);
+    alert('Something went wrong reaching the payment server. Please try again.');
+  }
+}
+
+
+let nextId = 1;
+async function loadProducts(){
+  try{
+    const res = await fetch(BACKEND_URL + '/api/products');
+    products = await res.json();
+  } catch(err){
+    console.error('Could not load products from backend', err);
+    products = [];
+  }
+  nextId = products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1;
+  renderAisles();
+}
+
+async function addProduct(){
+  const cat = document.getElementById('pCat').value;
+  const name = document.getElementById('pName').value.trim();
+  const price = parseFloat(document.getElementById('pPrice').value);
+  const emoji = document.getElementById('pEmoji').value.trim() || CAT_EMOJI[cat];
+  const desc = document.getElementById('pDesc').value.trim();
+  const details = document.getElementById('pDetails').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(!name || !price){ alert('Add at least a name and price.'); return; }
+
+  try{
+    const res = await fetch(BACKEND_URL + '/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cat, name, price, emoji, desc, details: details.length?details:["No details added yet"] })
+    });
+    if(!res.ok) throw new Error('Backend rejected the product');
+    await loadProducts();
+    closeModal('adminModal');
+    document.getElementById('pName').value='';
+    document.getElementById('pPrice').value='';
+    document.getElementById('pDesc').value='';
+    document.getElementById('pDetails').value='';
+    window.location.hash = 'aisle-'+encodeURIComponent(cat);
+  } catch(err){
+    console.error(err);
+    alert('Could not save the product — check the backend is running.');
+  }
+}
+
+const POLICIES = {
+  about: `<h2>About Us</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <p>Fieldstock Commerce is an online store curating handcrafted metal vases — statement donut shapes, sculptural arches, aged patina finishes, and classic hammered brass — sourced directly from artisan manufacturers in Moradabad, India. We are a sole proprietorship business based in Visakhapatnam, Andhra Pradesh, India, and we ship to customers across India and select international destinations.</p>
+    <!-- TODO (post-backend): replace the static "ships to" line and add a live delivery-estimate widget that
+         reads the visitor's location (via a geolocation/IP-lookup API called from the backend) and shows an
+         estimated delivery window per customer. Not possible from a static frontend-only page. -->
+    <p><em>Fieldstock Commerce — curated finds across categories that are trending right now.</em></p>`,
+
+  contact: `<h2>Contact Us</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <p>For order queries, returns, or support, reach us using the details below. We aim to respond within 24–48 hours.</p>
+    <div class="contact-block">
+      <div><b>Business name:</b> Fieldstock Commerce</div>
+      <div><b>Email:</b> Fieldstock.org@gmail.com</div>
+      <div><b>Phone:</b> +91 89193 41982</div>
+      <div><b>Registered address:</b> Visakhapatnam, Andhra Pradesh, India</div>
+      <div><b>Support hours:</b> Mon–Sat, 10am–6pm IST</div>
+    </div>
+    <p><em>Payment gateways specifically check for a real, reachable email/phone here — fill these in before submitting for verification.</em></p>`,
+
+  shipping: `<h2>Shipping Policy</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <h3>Processing time</h3><p>Orders are processed within 1–3 business days of payment confirmation.</p>
+    <h3>Delivery timelines</h3><ul>
+      <li>Domestic (India): 5–10 business days</li>
+      <li>International: 10–20 business days, depending on destination and customs</li>
+    </ul>
+    <h3>Shipping charges</h3><p>Shipping cost is calculated at checkout based on destination and order weight. [Adjust once you finalize supplier/shipping rates.]</p>
+    <h3>Tracking</h3><p>A tracking link is shared via email/SMS once your order is dispatched.</p>
+    <p><em>Edit these timelines to match your actual supplier's fulfillment and shipping times once confirmed.</em></p>`,
+
+  refund: `<h2>Refund & Cancellation Policy</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <h3>Cancellations</h3><p>Orders can be cancelled within 24 hours of placement, provided they have not yet been shipped by our supplier.</p>
+    <h3>Returns</h3><p>Returns are accepted within 7 days of delivery for items that are damaged, defective, or significantly not as described. The product must be unused and in original packaging.</p>
+    <h3>Refunds</h3><p>Approved refunds are processed to the original payment method within 5–7 business days after we receive and inspect the returned item.</p>
+    <h3>Non-returnable items</h3><p>As these are handcrafted pieces, minor variations in finish, hammering pattern, or patina are natural and not considered defects.</p>
+    <p><em>This is a starting template — align it with what your actual suppliers allow, since your return policy depends on their return terms to you.</em></p>`,
+
+  terms: `<h2>Terms & Conditions</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <h3>Orders</h3><p>By placing an order on this site, you agree to provide accurate shipping and contact information. We reserve the right to cancel orders due to stock unavailability or pricing errors.</p>
+    <h3>Pricing</h3><p>All prices are listed in INR (₹) unless stated otherwise and are subject to change without prior notice.</p>
+    <h3>Product accuracy</h3><p>We make reasonable efforts to display accurate product descriptions and images; minor variations may occur since products are sourced from third-party suppliers.</p>
+    <h3>Limitation of liability</h3><p>[Your business name] is not liable for indirect or incidental damages arising from product use.</p>
+    <p><em>Have a lawyer or CA review this before going live — this is a starting template, not legal advice.</em></p>`,
+
+  privacy: `<h2>Privacy Policy</h2><div class="updated">Last updated: ${new Date().toLocaleDateString()}</div>
+    <h3>What we collect</h3><p>Name, shipping address, email, and phone number provided at checkout, used solely to process and deliver your order.</p>
+    <h3>Payment data</h3><p>We do not store your card or UPI details. All payments are processed securely by our payment gateway partner (Razorpay), which is PCI-DSS compliant.</p>
+    <h3>Data sharing</h3><p>Your shipping details are shared only with our logistics/fulfillment partners to deliver your order.</p>
+    <h3>Contact</h3><p>For privacy questions, reach us at Fieldstock.org@gmail.com.</p>
+    <p><em>Update the bracketed details before publishing live.</em></p>`
+};
+
+function showPolicy(key){
+  document.getElementById('app').style.display='none';
+  document.getElementById('detail-view').style.display='none';
+  const pv = document.getElementById('policy-view');
+  pv.style.display='block';
+  pv.innerHTML = `<button class="detail-back" onclick="hidePolicy()">&larr; Back to store</button>` + POLICIES[key];
+  window.scrollTo(0,0);
+}
+function hidePolicy(){
+  document.getElementById('policy-view').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+renderNav();
+loadProducts();
+updateCartCount();
+</script>
+</body>
+</html>
